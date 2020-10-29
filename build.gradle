@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = '1.8'
+
+    if (project.hasProperty("projVersion")) {
+        project.setVersion(projVersion+'-SNAPSHOT')
+        println "I have the build version: " + version 
+    } else {
+     	project.setVersion('0.0.1-SNAPSHOT')
+     	println "I have the build version: 0.0.1"
+    }
+
+// name with versioning of the jar file
+jar {
+    baseName = 'numerical'    
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    
+    
+    mavenCentral() //jgt
+    
+    flatDir {
+    	dirs 'lib'
+	}	
+}
+
+dependencies {
+	compile name: 'Mesh'
+	compile name: 'Rheology-0.1.1'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+    
+}
