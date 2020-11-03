@@ -115,7 +115,8 @@ public class NestedNewtonThomas {
 
 		} else {
 			for(int element = 0; element < KMAX; element++) {
-				x[element] = Math.min(x[element], xStar[element]-1 );
+				//x[element] = Math.min(x[element], xStar[element]-1 );
+				x[element] = stateEquation.get(rheologyID[element]).initialGuess(x[element],parameterID[element],element);
 			}
 		}
 
@@ -129,21 +130,21 @@ public class NestedNewtonThomas {
 				if(element==0) {
 					fs[element] = stateEquation.get(rheologyID[element]).stateEquation(x[element],y[element],parameterID[element],element) - rhss[element]  + mainDiagonal[element]*x[element] + upperDiagonal[element]*x[element+1];
 					dis[element] = stateEquation.get(rheologyID[element]).dStateEquation(x[element],y[element],parameterID[element],element);
-					//					System.out.println(element+" "+fs[element]);
+//										System.out.println(element+" "+fs[element]);
 				} else if(element==KMAX-1) {
 					fs[element] = stateEquation.get(rheologyID[element]).stateEquation(x[element],y[element],parameterID[element],element) - rhss[element] + lowerDiagonal[element]*x[element-1] + mainDiagonal[element]*x[element];
 					dis[element] = stateEquation.get(rheologyID[element]).dStateEquation(x[element],y[element],parameterID[element],element);
-					//					System.out.println(element+" "+fs[element]);
+//										System.out.println(element+" "+fs[element]);
 				} else {
 					fs[element] = stateEquation.get(rheologyID[element]).stateEquation(x[element],y[element],parameterID[element],element) - rhss[element] + lowerDiagonal[element]*x[element-1] + mainDiagonal[element]*x[element] + upperDiagonal[element]*x[element+1];
 					dis[element] = stateEquation.get(rheologyID[element]).dStateEquation(x[element],y[element],parameterID[element],element);
-					//					System.out.println(element+" "+fs[element]);
+//										System.out.println(element+" "+fs[element]);
 				}
 
 				outerResidual += fs[element]*fs[element];
 			}
 			outerResidual = Math.pow(outerResidual,0.5);  
-									System.out.println("\tOuter iteration " + i + " with residual " +  outerResidual);
+//									System.out.println("\tOuter iteration " + i + " with residual " +  outerResidual);
 			if(outerResidual < newtonTolerance) {
 				break;
 			}
@@ -178,25 +179,25 @@ public class NestedNewtonThomas {
 						if(element==0) {
 							fks[element] = stateEquation.get(rheologyID[element]).pIntegral(x[element],y[element],parameterID[element],element) - ( stateEquation.get(rheologyID[element]).qIntegral(x_outer[element],y[element],parameterID[element],element) + stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element)*(x[element]-x_outer[element]) ) - this.rhss[element] + mainDiagonal[element]*x[element] + upperDiagonal[element]*x[element+1];
 							dis[element] = ( stateEquation.get(rheologyID[element]).p(x[element],y[element],parameterID[element],element) - stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element) );
-							//							System.out.println(element+" "+fks[element]);
-							//							System.out.println(element+" "+dis[element]);
+//														System.out.println(element+" "+fks[element]);
+//														System.out.println(element+" "+dis[element]);
 						} else if(element==KMAX-1) {
 							fks[element] = stateEquation.get(rheologyID[element]).pIntegral(x[element],y[element],parameterID[element],element) - ( stateEquation.get(rheologyID[element]).qIntegral(x_outer[element],y[element],parameterID[element],element) + stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element)*(x[element]-x_outer[element]) ) - this.rhss[element] + lowerDiagonal[element]*x[element-1] + mainDiagonal[element]*x[element];
 							dis[element] = ( stateEquation.get(rheologyID[element]).p(x[element],y[element],parameterID[element],element) - stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element) );
-							//							System.out.println(element+" "+fks[element]);
-							//							System.out.println(element+" "+dis[element]);
+//														System.out.println(element+" "+fks[element]);
+//														System.out.println(element+" "+dis[element]);
 						} else {
 							fks[element] = stateEquation.get(rheologyID[element]).pIntegral(x[element],y[element],parameterID[element],element) - ( stateEquation.get(rheologyID[element]).qIntegral(x_outer[element],y[element],parameterID[element],element) + stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element)*(x[element]-x_outer[element]) ) - this.rhss[element]  + lowerDiagonal[element]*x[element-1] + mainDiagonal[element]*x[element] + upperDiagonal[element]*x[element+1];
 							dis[element] = ( stateEquation.get(rheologyID[element]).p(x[element],y[element],parameterID[element],element) - stateEquation.get(rheologyID[element]).q(x_outer[element],y[element],parameterID[element],element) );
-							//							System.out.println(element+" "+fks[element]);
-							//							System.out.println(element+" "+dis[element]);
+//														System.out.println(element+" "+fks[element]);
+//														System.out.println(element+" "+dis[element]);
 						}
 
 						innerResidual += fks[element]*fks[element];
 					}
 					innerResidual = Math.pow(innerResidual,0.5);
 
-															System.out.println("\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
+//															System.out.println("\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
 
 					if(innerResidual < newtonTolerance) {
 						break;
