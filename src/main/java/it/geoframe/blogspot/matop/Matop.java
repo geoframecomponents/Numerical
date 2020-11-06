@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package matop;
+package it.geoframe.blogspot.matop;
 
 import java.util.Map;
 

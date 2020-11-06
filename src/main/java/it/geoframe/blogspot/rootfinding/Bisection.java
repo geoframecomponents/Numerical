@@ -20,7 +20,7 @@
 /**
  * 
  */
-package rootfinding;
+package it.geoframe.blogspot.rootfinding;
 
 
 import stateequation.StateEquation;

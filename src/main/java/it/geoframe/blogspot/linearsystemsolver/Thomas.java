@@ -1,4 +1,4 @@
-package linearsystemsolver;
+package it.geoframe.blogspot.linearsystemsolver;
 /*
  * GNU GPL v3 License
  *

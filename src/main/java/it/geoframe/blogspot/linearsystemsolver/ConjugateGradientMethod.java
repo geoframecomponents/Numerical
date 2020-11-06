@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package linearsystemsolver;
+package it.geoframe.blogspot.linearsystemsolver;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import bidimensionalDomain.Geometry;
 import bidimensionalDomain.Topology;
-import matop.*;
+import it.geoframe.blogspot.matop.*;
 
 /**
  * <h1>Conjugate gradient method </h1>
