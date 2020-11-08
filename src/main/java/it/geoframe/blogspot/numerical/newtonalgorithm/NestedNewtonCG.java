@@ -1,12 +1,12 @@
-package it.geoframe.blogspot.newtonalgorithm;
+package it.geoframe.blogspot.numerical.newtonalgorithm;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import bidimensionalDomain.Geometry;
 import bidimensionalDomain.Topology;
-import it.geoframe.blogspot.linearsystemsolver.*;
-import it.geoframe.blogspot.matop.*;
+import it.geoframe.blogspot.numerical.linearsystemsolver.*;
+import it.geoframe.blogspot.numerical.matop.*;
 
 public class NestedNewtonCG {
 

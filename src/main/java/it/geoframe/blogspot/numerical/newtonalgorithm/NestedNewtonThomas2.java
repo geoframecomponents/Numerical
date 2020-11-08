@@ -1,8 +1,8 @@
-package it.geoframe.blogspot.newtonalgorithm;
+package it.geoframe.blogspot.numerical.newtonalgorithm;
 
 import java.util.List;
 
-import it.geoframe.blogspot.linearsystemsolver.Thomas;
+import it.geoframe.blogspot.numerical.linearsystemsolver.Thomas;
 import stateequation.StateEquation;
 
 /*

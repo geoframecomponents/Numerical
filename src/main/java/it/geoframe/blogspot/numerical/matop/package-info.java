@@ -5,4 +5,4 @@
  * @author Niccolo` Tubini
  *
  */
-package it.geoframe.blogspot.matop;
+package it.geoframe.blogspot.numerical.matop;

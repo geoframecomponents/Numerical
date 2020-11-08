@@ -20,10 +20,10 @@
 /**
  * 
  */
-package it.geoframe.blogspot.rootfinding;
+package it.geoframe.blogspot.numerical.rootfinding;
 
 
-import stateequation.StateEquation;
+import it.geoframe.blogspot.closureequation.equationstate.EquationState;
 
 /**
  * @author Niccolo` Tubini
@@ -33,7 +33,7 @@ import stateequation.StateEquation;
 public class Bisection {
 
 
-	private StateEquation stateEquation;
+	private EquationState equationState;
 	private double fa;
 	private double fb;
 	private double fc;
@@ -41,9 +41,9 @@ public class Bisection {
 	private double tolerance = 1e-11;
 	private int counter;
 
-	public Bisection(StateEquation stateEquation) {
+	public Bisection(EquationState stateEquation) {
 
-		this.stateEquation = stateEquation;		
+		this.equationState = stateEquation;		
 
 	}
 
@@ -53,10 +53,10 @@ public class Bisection {
 
 		counter = 1;
 
-		fa = stateEquation.ddStateEquation(a, y, id, element);
-		fb = stateEquation.ddStateEquation(b, y, id, element);
+		fa = equationState.ddEquationState(a, y, id, element);
+		fb = equationState.ddEquationState(b, y, id, element);
 		c = (a+b)/2;
-		fc = stateEquation.ddStateEquation(c, y, id, element);
+		fc = equationState.ddEquationState(c, y, id, element);
 
 		if(fc == 0.0) {
 			return c;
@@ -69,7 +69,7 @@ public class Bisection {
 				}
 //				System.out.println("a "+a+" b "+b+" fa*fb "+fa*fb);
 				c = (a+b)/2;
-				fc = stateEquation.ddStateEquation(c, y, id, element);
+				fc = equationState.ddEquationState(c, y, id, element);
 
 				if(fc == 0.0) {
 					return c;

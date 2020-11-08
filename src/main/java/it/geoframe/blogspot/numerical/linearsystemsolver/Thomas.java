@@ -1,4 +1,4 @@
-package it.geoframe.blogspot.linearsystemsolver;
+package it.geoframe.blogspot.numerical.linearsystemsolver;
 /*
  * GNU GPL v3 License
  *
@@ -33,12 +33,12 @@ package it.geoframe.blogspot.linearsystemsolver;
 
 public class Thomas {
 	
-	double[] mainDiagonal;
-	double[] upperDiagonal;
-	double[] lowerDiagonal;
-	double[] rhss;
-	double[] solution;
-	int DIM;
+	private double[] mainDiagonal;
+	private double[] upperDiagonal;
+	private double[] lowerDiagonal;
+	private double[] rhss;
+	private double[] solution;
+	private int DIM;
 	
 
 	public Thomas(){}

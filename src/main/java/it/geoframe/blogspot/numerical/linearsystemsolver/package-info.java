@@ -9,4 +9,4 @@
  * @author Niccolo` Tubini 
  *
  */
-package it.geoframe.blogspot.linearsystemsolver;
+package it.geoframe.blogspot.numerical.linearsystemsolver;
