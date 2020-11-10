@@ -66,7 +66,7 @@ public class NestedNewtonThomas {
 
 
 
-	public NestedNewtonThomas(int nestedNewton, double newtonTolerance, int MAXITER_NEWT, int VECTOR_LENGTH, List<EquationState> equationState, double delta, int[] parameterID, int[] rheologyID){
+	public NestedNewtonThomas(int nestedNewton, double newtonTolerance, int MAXITER_NEWT, int VECTOR_LENGTH, List<EquationState> equationState, double delta){
 
 		this.nestedNewton = nestedNewton;
 		this.newtonTolerance = newtonTolerance;
@@ -74,8 +74,7 @@ public class NestedNewtonThomas {
 		//		this.NUM_CONTROL_VOLUMES = VECTOR_LENGTH;
 		this.equationState = equationState;
 		this.delta = delta;
-		this.parameterID = parameterID;
-		this.rheologyID = rheologyID;
+
 
 		x = new double[VECTOR_LENGTH];
 		dx = new double[VECTOR_LENGTH];
@@ -90,7 +89,7 @@ public class NestedNewtonThomas {
 
 
 
-	public void set(double[] x, double[] y, double[] mainDiagonal, double[] upperDiagonal, double[] lowerDiagonal, double[] rhss, int KMAX){
+	public void set(double[] x, double[] y, double[] mainDiagonal, double[] upperDiagonal, double[] lowerDiagonal, double[] rhss, int KMAX, int[] parameterID, int[] rheologyID){
 
 		this.x = x;
 		this.y = y;
@@ -100,6 +99,9 @@ public class NestedNewtonThomas {
 		this.rhss = rhss;
 
 		this.KMAX = KMAX;
+		
+		this.parameterID = parameterID;
+		this.rheologyID = rheologyID;
 
 	}
 
