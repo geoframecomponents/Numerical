@@ -147,7 +147,7 @@ public class NestedNewtonThomas {
             
 			
 			outerResidual = Math.pow(outerResidual,0.5);  
-									System.out.println("\tOuter iteration " + i + " with residual " +  outerResidual);
+//									System.out.println("\tOuter iteration " + i + " with residual " +  outerResidual);
 			if(outerResidual < newtonTolerance) {
 				break;
 			}
@@ -201,7 +201,7 @@ public class NestedNewtonThomas {
 
 					innerResidual = Math.pow(innerResidual,0.5);
 
-															System.out.println("\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
+//															System.out.println("\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
 
 					if(innerResidual < newtonTolerance) {
 						break;
