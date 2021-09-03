@@ -55,9 +55,11 @@ public class NestedNewton {
 			
 			f = ode.compute(x0) - ode.computeRHS();
 			
+//			System.out.println("\tOuter iteration " + outerIteration + " with residual " + Math.abs(f));
+
 			if(Math.abs(f)<tol) {
 				
-				return x0;
+				break;
 				
 			}
 			
@@ -67,9 +69,11 @@ public class NestedNewton {
 				
 				ff = ode.computePIntegral(x0) - (ode.computeQIntegral(x_k)+ode.computeQ(x_k)*(x0-x_k)) - ode.computeRHS();
 				
+//				System.out.println("\t\tInner iteration " + innerrIteration + " with residual " + Math.abs(ff));
+
 				if(Math.abs(ff)<tol) {
 					
-					return x0;
+					break;
 					
 				}
 				
