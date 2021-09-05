@@ -24,7 +24,7 @@ package it.geoframe.blogspot.numerical.ode;
  * @author Niccolò Tubini, Giuseppe Formetta
  * 
  */
-public class NestedNewton {
+public class NestedNewton implements NonLinearEquationSolver {
 
 	private double x0;
 	
