@@ -19,11 +19,12 @@
 
 package it.geoframe.blogspot.numerical.linearsystemsolver;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import bidimensionalDomain.Geometry;
-import bidimensionalDomain.Topology;
+//import bidimensionalDomain.Geometry;
+//import bidimensionalDomain.Topology;
 import it.geoframe.blogspot.numerical.matop.*;
 
 /**
@@ -48,41 +49,51 @@ import it.geoframe.blogspot.numerical.matop.*;
 
 public class ConjugateGradientMethod {
 	
-	double alpha;
-	double alphak;
-	double lambda;
-	double tmp;
-	double cgTolerance;
-	Map<Integer, Double> residual;
-	Map<Integer, Double> x;
-	Map<Integer, Double> p;
-	Map<Integer, Double> Apsi;
-	Topology topology;
-	Geometry geometry;
-	Matop matop;
+	private double alpha;
+	private double alphak;
+	private double lambda;
+	private double tmp;
+	private double cgTolerance;
 	
-	public ConjugateGradientMethod(Matop matop, double cgTolerance) {
+	private List<Double> residual;
+	private List<Double> x;
+	private List<Double> p;
+	private List<Double> Apsi;
+	
+	private List<Integer> elements;
+
+	private Matop matop;
+	
+	public ConjugateGradientMethod(Matop matop, double cgTolerance, List<Integer> elements) {
 		
-		residual = new HashMap<Integer, Double>();
-		x = new HashMap<Integer, Double>();
-		p = new HashMap<Integer, Double>();
-		Apsi = new HashMap<Integer, Double>();
+		residual = new ArrayList<Double>(Arrays.asList(new Double[elements.size()]));
+		x = new ArrayList<Double>(Arrays.asList(new Double[elements.size()]));
+		p = new ArrayList<Double>(Arrays.asList(new Double[elements.size()]));
+		Apsi = new ArrayList<Double>(Arrays.asList(new Double[elements.size()]));
+		this.elements = new ArrayList<Integer>(elements);
 		this.matop = matop;
 		this.cgTolerance = cgTolerance;
 	}
 
-	public Map<Integer, Double> solve(Map<Integer, Double> dis, Map<Integer, Double> b, Map<Integer, Double> mainDiagonal){
+	public List<Double> solve(List<Double> dis, List<Double> rhs, List<Double> mainDiagonal){
 
-		x = b;
-
+		x = new ArrayList<Double>(rhs);
+//				System.out.println("x:");
+//				for(int element=1; element<elements.size(); element++) {
+//					System.out.println("\t"+ element + "\t" + x.get(element));
+//				}
 		Apsi = matop.solve(dis, x);
+//				System.out.println("Apsi primo:");
+//				for(int element=1; element<elements.size(); element++) {
+//					System.out.println("\t"+ element + "\t" + Apsi.get(element)+ "\t" + dis.get(element)+ "\t" + x.get(element) );
+//				}
 		alpha = 0.0;
-		for(Integer element : topology.s_i.keySet()) {
-			residual.put(element, b.get(element)-Apsi.get(element)); 
+		for(int element=1; element<elements.size(); element++) {
+			residual.set(element, rhs.get(element)-Apsi.get(element)); 
 			// 			no preconditioner
 			//			p.put(element, residual.get(element));
 			// With preconditioner
-			p.put(element, residual.get(element)/(mainDiagonal.get(element)+dis.get(element)));
+			p.set(element, residual.get(element)/(mainDiagonal.get(element)+dis.get(element)));
 			alpha += p.get(element)*residual.get(element);
 		}
 		int iter =1;
@@ -94,39 +105,47 @@ public class ConjugateGradientMethod {
 			}
 
 			tmp = 0.0;
-
+//					System.out.println("p:");
+//					for(int element=1; element<elements.size(); element++) {
+//						System.out.println("\t"+ element + "\t" + p.get(element));
+//					}
 			Apsi = matop.solve(dis, p);
-
+//					System.out.println("Apsi :");
+//					for(int element=1; element<elements.size(); element++) {
+//						System.out.println("\t"+ element + "\t" + Apsi.get(element));
+//					}
 			tmp = 0.0;
-			for(Integer element : topology.s_i.keySet()) {
+			for(int element=1; element<elements.size(); element++) {
 				tmp += p.get(element)*Apsi.get(element);
 			}
 			lambda = alpha/tmp;
+//			System.out.println("\t\t\t\ttmp: " + tmp + "\tlambda: " + lambda);
 
 			alphak = alpha;
 			alpha = 0.0;
-			for(Integer element : topology.s_i.keySet()) {
+			for(int element=1; element<elements.size(); element++) {
 				tmp = x.get(element) + lambda*p.get(element);
-				x.put(element, tmp);
+				x.set(element, tmp);
 				tmp = residual.get(element) - lambda*Apsi.get(element);
-				residual.put(element, tmp);
+				residual.set(element, tmp);
 				// 				no preconditioner
 				//				alpha += tmp*tmp;
 				// with preconditioner
 				alpha += tmp/(mainDiagonal.get(element)+dis.get(element))*tmp;
 			}
 			
-			for(Integer element : topology.s_i.keySet()) {
+//			System.out.println("\t\t\t\t\talpha: " + alpha + "\talphak: " + alphak);
+			for(int element=1; element<elements.size(); element++) {
 				// 				no preconditioner
 				//				tmp = residual.get(element)+alpha/alphak*p.get(element);
 				// with preconditioner
 				tmp = residual.get(element)/(mainDiagonal.get(element)+dis.get(element))+alpha/alphak*p.get(element);
-				p.put(element, tmp );
+				p.set(element, tmp );
 			}
 
 			iter++;
 		}
-		System.out.println("\t\t\t\t\tk: " + iter +"\tsqrt(alpha): " +Math.sqrt(alpha));
+//		System.out.println("\t\t\t\t\tk: " + iter +"\tsqrt(alpha): " +Math.sqrt(alpha));
 
 		return x;
 	}
