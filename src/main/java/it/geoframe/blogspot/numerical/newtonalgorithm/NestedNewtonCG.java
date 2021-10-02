@@ -1,10 +1,29 @@
+/*
+ * GNU GPL v3 License
+ *
+ * Copyright 2021 Niccolo` Tubini
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package it.geoframe.blogspot.numerical.newtonalgorithm;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import bidimensionalDomain.Geometry;
-import bidimensionalDomain.Topology;
+import it.geoframe.blogspot.closureequation.equationstate.EquationState;
 import it.geoframe.blogspot.numerical.linearsystemsolver.*;
 import it.geoframe.blogspot.numerical.matop.*;
 
@@ -13,34 +32,29 @@ public class NestedNewtonCG {
 	private double outerResidual;
 	private double innerResidual;
 
-	int nestedNewton;
-	int MAXITER_NEWT;
+	private int MAXITER_NEWT;
 
-	double newtonTolerance;
-	double tmp;
-	double timeDelta;
+	private double newtonTolerance;
+	private double tmp;
 
 
-	Map<Integer, Double> rhss;
-	Map<Integer, Double> mainDiagonal;
-	Map<Integer, Double> variable;
-	
-	private Map<Integer, Double> Apsi;
-	private Map<Integer, Double> fs;
-	private Map<Integer, Double> fks;
-	private Map<Integer, Double> dis;
-	private Map<Integer, Double> dpsis;
-	private Map<Integer, Double> psis_outer;
-	private Map<Integer, Double> psism;
+	private List<Double> rhss;
+	private List<Double> mainDiagonal;
+	private List<Double> x;
+	private List<Double> y;
+	private List<Integer> elementEquationStateID;
+	private List<Integer> elementParameterID;
+	private List<EquationState> equationState;
+	private List<Double> Apsi;
+	private List<Double> fs;
+	private List<Double> fks;
+	private List<Double> dis;
+	private List<Double> dx;
+	private List<Double> x_outer;
 
-	Topology topology;
-	Geometry geometry;
-//	SoilWaterRetentionCurve swrc;
-//	//TotalDepth totalDepth;
-//	//Thomas thomasAlg = new Thomas();
-//
-	Matop matop;
-	ConjugateGradientMethod cg;
+
+	private Matop matop;
+	private ConjugateGradientMethod cg;
 
 
 
@@ -56,24 +70,25 @@ public class NestedNewtonCG {
 	 * @param thetaR vector containing the adimensional residual water contentfor each control volume, it is a vector of length NUM_CONTROL_VOLUMES-1
 	 * @param thetaS vector containing the adimensional water content at saturation for each control volume, it is a vector of length NUM_CONTROL_VOLUMES-1
 	 */
-	public NestedNewtonCG(int nestedNewton, double newtonTolerance, int MAXITER_NEWT, SoilWaterRetentionCurve swrc, Matop matop, double cgTolerance){
+	public NestedNewtonCG(double newtonTolerance, int MAXITER_NEWT, List<EquationState> equationState, Matop matop, double cgTolerance,
+			List<Integer> elementParameterID, List<Integer> elementEquationStateID) {
 
-		this.nestedNewton = nestedNewton;
 		this.newtonTolerance = newtonTolerance;
 		this.MAXITER_NEWT = MAXITER_NEWT;
-		this.topology = Topology.getInstance();
-		this.geometry = Geometry.getInstance();
-//		this.swrc = swrc;
-//		this.matop = matop;
-		this.cg = new ConjugateGradientMethod(matop, cgTolerance);
+		this.equationState = equationState;
+		this.elementParameterID = elementParameterID;
+		this.elementEquationStateID = elementEquationStateID;
+		this.cg = new ConjugateGradientMethod(matop, cgTolerance, elementParameterID);
+
+		this.matop = matop;
 
 
-		fs			  = new HashMap<Integer, Double>();
-		fks			  = new HashMap<Integer, Double>();
-		dis			  = new HashMap<Integer, Double>();
-		dpsis		  = new HashMap<Integer, Double>();
-		psis_outer	  = new HashMap<Integer, Double>();
-		psism          = new HashMap<Integer, Double>();
+		fs		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		fks		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		dis		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		dx		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		x_outer	  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+
 	}
 
 
@@ -85,143 +100,131 @@ public class NestedNewtonCG {
 	 * @param lowerDiagonal lower diagonal of the coefficient matrix A of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
 	 * @param rhss right hand side term of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
 	 */
-	public void set(Map<Integer, Double> variable, Map<Integer, Double> rhss, Map<Integer, Double> mainDiagonal){
+	public void set(List<Double> x, List<Double> y, List<Double> rhss, List<Double> mainDiagonal) {
 
-		this.variable = variable;
-		this.rhss = rhss;
-		this.mainDiagonal = mainDiagonal;
+		this.x = new ArrayList<Double>(x);
+		this.y = new ArrayList<Double>(y);
+		this.rhss = new ArrayList<Double>(rhss);
+		this.mainDiagonal = new ArrayList<Double>(mainDiagonal);
 
 	}
 
 
 
-	public Map<Integer, Double> solver(){
+	public List<Double> solver() {
 
 
 
 		// Initial guess for the outer iteration
-		for(Integer element : topology.s_i.keySet()) {
-			tmp = Math.min(variable.get(element), SoilParameters.psiStar1[SoilParameters.elementsLabel.get(element)]);
-//			Variables.waterSuctions.put(element, tmp);
+		for(int element=1; element<elementParameterID.size(); element++) {
+			tmp = equationState.get(elementEquationStateID.get(element)).initialGuess(x.get(element), elementParameterID.get(element), element);
+			x.set(element, tmp);
 		}
 
 		//// OUTER CYCLE ////
 		for(int i = 0; i < MAXITER_NEWT; i++) {
 			// I have to assign 0 to outerResidual otherwise I will take into account of the previous error
 			outerResidual = 0.0;
-			for(Integer element : topology.s_i.keySet()) {
-				dis.put(element, 0.0);
+			for(int element=1; element<elementParameterID.size(); element++) {
+
+				dis.set(element, 0.0);
+
 			}
-			Apsi = matop.solve(dis, variable);
-//			System.out.println("Apsi outer:");
-//			for(Integer element : Topology.s_i.keySet()) {
-//				System.out.println("\t"+ element + "\t" + Apsi.get(element));
-//			}
-			
-//			System.out.println("fs :");
-			for(Integer element : topology.s_i.keySet()) {
-				tmp =  swrc.dWaterContent(variable.get(element),element)*geometry.elementsArea.get(element);
-				dis.put(element, tmp );
-				tmp = swrc.waterContent(variable.get(element),element)*geometry.elementsArea.get(element) - rhss.get(element) + Apsi.get(element);
-				fs.put(element, tmp);
-//				System.out.println(element +": " +swrc.waterContent(Variables.waterSuctions.get(element),element) +" "+Geometry.elementsArea.get(element) +" "+rhss.get(element)+" "+ Apsi.get(element)+" " +fs.get(element) + " " + dis.get(element));
-//				System.out.println("\t"+ element + "\t" + fs.get(element));
-		
+
+			Apsi = matop.solve(dis, x);
+//						System.out.println("Apsi outer:");
+//						for(int element=1; element<elementParameterID.size(); element++) {
+//							System.out.println("\t"+ element + "\t" + Apsi.get(element));
+//						}
+//
+//						System.out.println("fs :");
+			for(int element=1; element<elementParameterID.size(); element++) {
+
+				tmp = equationState.get(elementEquationStateID.get(element)).dEquationState(x.get(element), y.get(element), elementParameterID.get(element), element);
+				dis.set(element, tmp);
+
+				tmp = equationState.get(elementEquationStateID.get(element)).equationState(x.get(element), y.get(element), elementParameterID.get(element), element) - rhss.get(element) + Apsi.get(element);
+				fs.set(element, tmp);
+//								System.out.println("\t"+ element + "\t" + fs.get(element));
+
 				outerResidual += tmp*tmp;
 			}
+
 			outerResidual = Math.pow(outerResidual,0.5);  
-			System.out.println("\t\t-Outer iteration " + i + " with residual " +  outerResidual);
+//			System.out.println("\t\t-Outer iteration " + i + " with residual " +  outerResidual);
 			if(outerResidual < newtonTolerance) {
+
 				break;
+
 			}
-			if(nestedNewton == 0){
 
-			}else{
 
-				// Initial guess for the inner iteration (optional)
-				for(Integer element : topology.s_i.keySet()) {
-//					psis_outer.put(element, Variables.waterSuctions.get(element));
-//					Variables.waterSuctions.put(element, Math.max(Variables.waterSuctions.get(element), SoilParameters.psiStar1[SoilParameters.elementsLabel.get(element)]));
+			for(int element=1; element<elementParameterID.size(); element++) {
+
+				x_outer.set(element, x.get(element));
+
+			}
+
+			//// INNER CYCLE ////
+			for(int j = 0; j < MAXITER_NEWT; j++) {
+				// I have to assign 0 to innerResidual otherwise I will take into account of the previous error
+				innerResidual = 0.0; 
+				for(int element=1; element<elementParameterID.size(); element++) {
+					dis.set(element, 0.0);
+				}
+				Apsi = matop.solve(dis, x);
+//									System.out.println("Apsi inner:");
+//									for(int element=1; element<elementParameterID.size(); element++) {
+//										System.out.println("\t"+ element + "\t" + Apsi.get(element));
+//									}
+//
+//									System.out.println("fks :");
+				for(int element=1; element<elementParameterID.size(); element++) {
+
+					tmp = equationState.get(elementEquationStateID.get(element)).p(x.get(element), y.get(element), elementParameterID.get(element), element) - equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element); 
+//					System.out.println("\t\telement "+element+"\t"+x.get(element)+"\t"+equationState.get(elementEquationStateID.get(element)).p(x.get(element), y.get(element), elementParameterID.get(element), element)+"\t"+equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element));
+					dis.set(element, tmp);
+
+					tmp = equationState.get(elementEquationStateID.get(element)).pIntegral(x.get(element), y.get(element), elementParameterID.get(element), element)
+							- ( equationState.get(elementEquationStateID.get(element)).qIntegral(x_outer.get(element), y.get(element), elementParameterID.get(element), element) + equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element)*(x.get(element) - x_outer.get(element)) )
+							- rhss.get(element) + Apsi.get(element);
+					fks.set(element, tmp);
+//											System.out.println("\t"+ element + "\t" + fks.get(element));
+
+					innerResidual += tmp*tmp;
 				}
 
-				//// INNER CYCLE ////
-				for(int j = 0; j < MAXITER_NEWT; j++) {
-					// I have to assign 0 to innerResidual otherwise I will take into account of the previous error
-					innerResidual = 0.0; 
-					for(Integer element : topology.s_i.keySet()) {
-						dis.put(element, 0.0);
-					}
-					Apsi = matop.solve(dis, variable);
-//					System.out.println("Apsi inner:");
-//					for(Integer element : Topology.s_i.keySet()) {
-//						System.out.println("\t"+ element + "\t" + Apsi.get(element));
-//					}
-//					System.out.println("inner psi-psi_outer :");
-					for(Integer element : topology.s_i.keySet()) {
+				innerResidual = Math.pow(innerResidual,0.5);
+//				System.out.println("\t\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
+				if(innerResidual < newtonTolerance) {
 
-						tmp = (swrc.p(variable.get(element),element) - swrc.q(psis_outer.get(element),element))*geometry.elementsArea.get(element);
-						dis.put(element, tmp);
-						tmp = swrc.pIntegral(variable.get(element),element)*geometry.elementsArea.get(element)
-								- ( swrc.qIntegral(psis_outer.get(element),element) + swrc.q(psis_outer.get(element),element)*(variable.get(element) - psis_outer.get(element)) )*Geometry.elementsArea.get(element)
-								- rhss.get(element) + Apsi.get(element);
-						fks.put(element, tmp);
+					break;
 
-//						System.out.println(element +" "+Variables.waterSuctions.get(element) + " " + psis_outer.get(element));
-//						System.out.println("\t"+ element + "\t" + fks.get(element));
+				}
 
-						innerResidual += tmp*tmp;
-					}
 
-					innerResidual = Math.pow(innerResidual,0.5);
-					System.out.println("\t\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
-					if(innerResidual < newtonTolerance) {
-//						System.out.println("Psi:");
-//						for(Integer element : Topology.s_i.keySet()) {
-//							System.out.println("\t"+ element + "\t" + Variables.waterSuctions.get(element));
-//
-//						}
-//
-//						System.out.println("\n\n");
-//						System.out.println("dpsi:");
-//						for(Integer element : Topology.s_i.keySet()) {
-//							System.out.println("\t"+ element + "\t" + dpsis.get(element));
-//
-//						}
-//						
-						break;
-					}
-					//// CONJUGATE GRADIENT METHOD////
-					dpsis = cg.solve(dis, fks, mainDiagonal);
-//					dpsis = cg.solve(dis, fks);
+				/* 
+				 * CONJUGATE GRADIENT METHOD
+				 */
+				dx = cg.solve(dis, fks, mainDiagonal);
+//					System.out.println("CG");
+//					System.out.println("dx psi");
+				for(int element=1; element<elementParameterID.size(); element++) {
 
-					for(Integer element : topology.s_i.keySet()) {
-//						psism.put(element, Variables.waterSuctions.get(element));
-						tmp  = variable.get(element)-dpsis.get(element);
-						variable.put(element, tmp );
-					}
+					tmp  = x.get(element)-dx.get(element);
+					x.set(element, tmp);
+//					System.out.println(dx.get(element) +" "+ tmp);
 
-//					if(j>1) {
-//						for(Integer element : Topology.s_i.keySet()) {
-//							Variables.waterSuctions.put(element, Math.min( Variables.waterSuctions.get(element), psism.get(element)) );
-//							if(i>1) {
-//									Variables.waterSuctions.put(element, Math.max( Variables.waterSuctions.get(element), psis_outer.get(element)) );
-//							}
-//						}
-//					}
-				} //// INNER CYCLE END ////
+				}
 
-			}
-			//		return variable;
-//			if(i>1) {
-//				for(Integer element : Topology.s_i.keySet()) {
-//					Variables.waterSuctions.put(element, Math.max( Variables.waterSuctions.get(element), psis_outer.get(element)) );
-//				}
-//			}
-			return variable;
-		} //// OUTER CYCLE END ////
+			} //// OUTER CYCLE END ////
+
+		}
+		
+		return x;
+
 
 	}
-
 
 }
 

@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2019 Niccolo` Tubini
+ * Copyright 2021 Niccolo` Tubini
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 package it.geoframe.blogspot.numerical.matop;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  *
@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public abstract class Matop {
 
-	public abstract Map<Integer, Double> solve(Map<Integer, Double> dis, Map<Integer, Double> variable);
+	
+	public abstract List<Double> solve(List<Double> dis, List<Double> variable);
+	
 	
 }
