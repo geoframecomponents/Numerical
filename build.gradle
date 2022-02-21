@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-sourceCompatibility = '1.8'
+sourceCompatibility = 11
 
     if (project.hasProperty("projVersion")) {
         project.setVersion(projVersion+'-SNAPSHOT')
@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
 	compile name: 'Mesh'
-	compile name: 'closureequation-na'
+	compile name: 'closureequation-1.0.2'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
