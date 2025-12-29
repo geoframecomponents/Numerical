@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolo Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ package it.geoframe.blogspot.numerical.ode;
 
 
 /**
- * @author Niccolò Tubini, Giuseppe Formetta
+ * @author Niccolo Tubini, Giuseppe Formetta
  * 
  */
 public interface NonLinearEquationSolver {
