@@ -7,8 +7,8 @@ A numerical library for the GEOframe framework, supporting **hydrological modeli
 ## Metadata
 - **Language**: Java
 - **Build system**: Gradle
--**@author**: Niccolo' Tubini
--**@license**: See the `LICENSE` file for license information (  GNU GENERAL PUBLIC LICENSE Version 3)
+- **@author**: Niccolo' Tubini
+- **@license**: See the `LICENSE` file for license information (  GNU GENERAL PUBLIC LICENSE Version 3)
 
 ---
 
