@@ -11,6 +11,12 @@ A numerical library for the GEOframe framework, supporting **hydrological modeli
 - **@license**: See the `LICENSE` file for license information (  GNU GENERAL PUBLIC LICENSE Version 3)
 
 ---
+## License
+
+This project is licensed under the GNU General Public License v3.0. See LICENSE.
+
+---
+
 
 ## Overview
 
@@ -23,16 +29,17 @@ It is designed as a **library module**, not as a standalone application, and is 
 
 ## Numerical Methods
 
-The `it.geoframe.blogspot.numerical` package includes implementations of:
+
+The `it.geoframe.blogspot.numerical` packages include:
 
 - **Linear system solvers**
-  - Thomas algorithm
-  - Conjugate Gradient method
+  - Thomas algorithm (tridiagonal systems)
+  - Conjugate Gradient method (matrix-free via `Matop`; intended for SPD systems)
 
 - **Nonlinear solvers**
-  - Nested Newton methods
+  - Nested Newton methods (Thomas-based and CG-based variants)
 
-- **Root-finding algorithms**
+- **Root finding**
   - Bisection method
 
 - **ODE utilities**
@@ -43,9 +50,29 @@ The `it.geoframe.blogspot.numerical` package includes implementations of:
 
 ## Project Structure
 
-Source code are placed in the folder **src/main/java/it/geoframe/blogspot/numerical**.
+Source code is located under:
 
-The package structure reflects the organization of numerical methods by functionality (e.g., solvers, utilities).
+`src/main/java/it/geoframe/blogspot/numerical`
+
+Main packages:
+
+- `linearsystemsolver/` — Thomas and Conjugate Gradient solvers  
+- `newtonalgorithm/` — Nested Newton implementations  
+- `matop/` — matrix-free operator abstraction (`Matop`)  
+- `rootfinding/` — bisection method  
+- `ode/` — ODE utilities and examples
+
+---
+## Design notes
+
+* This repository provides reusable numerical building blocks; domain-specific models live in other GEOframe components.
+
+* Some solvers support matrix-free computations through the Matop abstraction.
+
+* The Thomas algorithm modifies internal working arrays; pass copies if you need to reuse input diagonals.
+
+* Nested Newton and bisection methods depend on GEOframe closure-equation abstractions (e.g., EquationState).
+
 
 ---
 
