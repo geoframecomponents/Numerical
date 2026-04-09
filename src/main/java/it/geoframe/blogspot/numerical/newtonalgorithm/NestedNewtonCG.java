@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import it.geoframe.blogspot.closureequation.equationstate.EquationState;
+import org.geoframe.closureequation.equationstate.EquationState;
 import it.geoframe.blogspot.numerical.linearsystemsolver.*;
 import it.geoframe.blogspot.numerical.matop.*;
 
@@ -36,7 +36,6 @@ public class NestedNewtonCG {
 
 	private double newtonTolerance;
 	private double tmp;
-
 
 	private List<Double> rhss;
 	private List<Double> mainDiagonal;
@@ -52,26 +51,33 @@ public class NestedNewtonCG {
 	private List<Double> dx;
 	private List<Double> x_outer;
 
-
 	private Matop matop;
 	private ConjugateGradientMethod cg;
 
-
-
 	/**
-	 * @param nestedNewton control parameter to choose between simple Newton method (0), or the nested Newton one (1)
-	 * @param newtonTolerance prefixed tolerance representing the maximum mass balance error allowed  
-	 * @param MAXITER_NEWT prefixed maximum number of iteration
+	 * @param nestedNewton        control parameter to choose between simple Newton
+	 *                            method (0), or the nested Newton one (1)
+	 * @param newtonTolerance     prefixed tolerance representing the maximum mass
+	 *                            balance error allowed
+	 * @param MAXITER_NEWT        prefixed maximum number of iteration
 	 * @param NUM_CONTROL_VOLUMES number of control volumes
-	 * @param soilPar is the class to compute the soil hydraulic properties
-	 * @param totalDepth is the class to compute the total water depth
-	 * @param par1SWRC vector containing the first parameter of the SWRC, it is a vector of length NUM_CONTROL_VOLUMES-1
-	 * @param par2SWRC vector containing the second parameter of the SWRC, it is a vector of length NUM_CONTROL_VOLUMES-1
-	 * @param thetaR vector containing the adimensional residual water contentfor each control volume, it is a vector of length NUM_CONTROL_VOLUMES-1
-	 * @param thetaS vector containing the adimensional water content at saturation for each control volume, it is a vector of length NUM_CONTROL_VOLUMES-1
+	 * @param soilPar             is the class to compute the soil hydraulic
+	 *                            properties
+	 * @param totalDepth          is the class to compute the total water depth
+	 * @param par1SWRC            vector containing the first parameter of the SWRC,
+	 *                            it is a vector of length NUM_CONTROL_VOLUMES-1
+	 * @param par2SWRC            vector containing the second parameter of the
+	 *                            SWRC, it is a vector of length
+	 *                            NUM_CONTROL_VOLUMES-1
+	 * @param thetaR              vector containing the adimensional residual water
+	 *                            contentfor each control volume, it is a vector of
+	 *                            length NUM_CONTROL_VOLUMES-1
+	 * @param thetaS              vector containing the adimensional water content
+	 *                            at saturation for each control volume, it is a
+	 *                            vector of length NUM_CONTROL_VOLUMES-1
 	 */
-	public NestedNewtonCG(double newtonTolerance, int MAXITER_NEWT, List<EquationState> equationState, Matop matop, double cgTolerance,
-			List<Integer> elementParameterID, List<Integer> elementEquationStateID) {
+	public NestedNewtonCG(double newtonTolerance, int MAXITER_NEWT, List<EquationState> equationState, Matop matop,
+			double cgTolerance, List<Integer> elementParameterID, List<Integer> elementEquationStateID) {
 
 		this.newtonTolerance = newtonTolerance;
 		this.MAXITER_NEWT = MAXITER_NEWT;
@@ -82,23 +88,25 @@ public class NestedNewtonCG {
 
 		this.matop = matop;
 
-
-		fs		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
-		fks		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
-		dis		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
-		dx		  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
-		x_outer	  = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		fs = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		fks = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		dis = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		dx = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
+		x_outer = new ArrayList<Double>(Arrays.asList(new Double[elementParameterID.size()]));
 
 	}
 
-
-
 	/**
-	 * @param psis vector contains the suction values, it is a vector of length NUM_CONTROL_VOLUMES
-	 * @param upperDiagonal upper diagonal of the coefficient matrix A of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
-	 * @param mainDiagonal main diagonal of the coefficient matrix A of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
-	 * @param lowerDiagonal lower diagonal of the coefficient matrix A of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
-	 * @param rhss right hand side term of the linear system, it is a vector of length NUM_CONTROL_VOLUMES
+	 * @param psis          vector contains the suction values, it is a vector of
+	 *                      length NUM_CONTROL_VOLUMES
+	 * @param upperDiagonal upper diagonal of the coefficient matrix A of the linear
+	 *                      system, it is a vector of length NUM_CONTROL_VOLUMES
+	 * @param mainDiagonal  main diagonal of the coefficient matrix A of the linear
+	 *                      system, it is a vector of length NUM_CONTROL_VOLUMES
+	 * @param lowerDiagonal lower diagonal of the coefficient matrix A of the linear
+	 *                      system, it is a vector of length NUM_CONTROL_VOLUMES
+	 * @param rhss          right hand side term of the linear system, it is a
+	 *                      vector of length NUM_CONTROL_VOLUMES
 	 */
 	public void set(List<Double> x, List<Double> y, List<Double> rhss, List<Double> mainDiagonal) {
 
@@ -109,23 +117,21 @@ public class NestedNewtonCG {
 
 	}
 
-
-
 	public List<Double> solver() {
 
-
-
 		// Initial guess for the outer iteration
-		for(int element=1; element<elementParameterID.size(); element++) {
-			tmp = equationState.get(elementEquationStateID.get(element)).initialGuess(x.get(element), elementParameterID.get(element), element);
+		for (int element = 1; element < elementParameterID.size(); element++) {
+			tmp = equationState.get(elementEquationStateID.get(element)).initialGuess(x.get(element),
+					elementParameterID.get(element), element);
 			x.set(element, tmp);
 		}
 
 		//// OUTER CYCLE ////
-		for(int i = 0; i < MAXITER_NEWT; i++) {
-			// I have to assign 0 to outerResidual otherwise I will take into account of the previous error
+		for (int i = 0; i < MAXITER_NEWT; i++) {
+			// I have to assign 0 to outerResidual otherwise I will take into account of the
+			// previous error
 			outerResidual = 0.0;
-			for(int element=1; element<elementParameterID.size(); element++) {
+			for (int element = 1; element < elementParameterID.size(); element++) {
 
 				dis.set(element, 0.0);
 
@@ -138,38 +144,41 @@ public class NestedNewtonCG {
 //						}
 //
 //						System.out.println("fs :");
-			for(int element=1; element<elementParameterID.size(); element++) {
+			for (int element = 1; element < elementParameterID.size(); element++) {
 
-				tmp = equationState.get(elementEquationStateID.get(element)).dEquationState(x.get(element), y.get(element), elementParameterID.get(element), element);
+				tmp = equationState.get(elementEquationStateID.get(element)).dEquationState(x.get(element),
+						y.get(element), elementParameterID.get(element), element);
 				dis.set(element, tmp);
 
-				tmp = equationState.get(elementEquationStateID.get(element)).equationState(x.get(element), y.get(element), elementParameterID.get(element), element) - rhss.get(element) + Apsi.get(element);
+				tmp = equationState.get(elementEquationStateID.get(element)).equationState(x.get(element),
+						y.get(element), elementParameterID.get(element), element) - rhss.get(element)
+						+ Apsi.get(element);
 				fs.set(element, tmp);
 //								System.out.println("\t"+ element + "\t" + fs.get(element));
 
-				outerResidual += tmp*tmp;
+				outerResidual += tmp * tmp;
 			}
 
-			outerResidual = Math.pow(outerResidual,0.5);  
+			outerResidual = Math.pow(outerResidual, 0.5);
 //			System.out.println("\t\t-Outer iteration " + i + " with residual " +  outerResidual);
-			if(outerResidual < newtonTolerance) {
+			if (outerResidual < newtonTolerance) {
 
 				break;
 
 			}
 
-
-			for(int element=1; element<elementParameterID.size(); element++) {
+			for (int element = 1; element < elementParameterID.size(); element++) {
 
 				x_outer.set(element, x.get(element));
 
 			}
 
 			//// INNER CYCLE ////
-			for(int j = 0; j < MAXITER_NEWT; j++) {
-				// I have to assign 0 to innerResidual otherwise I will take into account of the previous error
-				innerResidual = 0.0; 
-				for(int element=1; element<elementParameterID.size(); element++) {
+			for (int j = 0; j < MAXITER_NEWT; j++) {
+				// I have to assign 0 to innerResidual otherwise I will take into account of the
+				// previous error
+				innerResidual = 0.0;
+				for (int element = 1; element < elementParameterID.size(); element++) {
 					dis.set(element, 0.0);
 				}
 				Apsi = matop.solve(dis, x);
@@ -179,39 +188,46 @@ public class NestedNewtonCG {
 //									}
 //
 //									System.out.println("fks :");
-				for(int element=1; element<elementParameterID.size(); element++) {
+				for (int element = 1; element < elementParameterID.size(); element++) {
 
-					tmp = equationState.get(elementEquationStateID.get(element)).p(x.get(element), y.get(element), elementParameterID.get(element), element) - equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element); 
+					tmp = equationState.get(elementEquationStateID.get(element)).p(x.get(element), y.get(element),
+							elementParameterID.get(element), element)
+							- equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element),
+									y.get(element), elementParameterID.get(element), element);
 //					System.out.println("\t\telement "+element+"\t"+x.get(element)+"\t"+equationState.get(elementEquationStateID.get(element)).p(x.get(element), y.get(element), elementParameterID.get(element), element)+"\t"+equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element));
 					dis.set(element, tmp);
 
-					tmp = equationState.get(elementEquationStateID.get(element)).pIntegral(x.get(element), y.get(element), elementParameterID.get(element), element)
-							- ( equationState.get(elementEquationStateID.get(element)).qIntegral(x_outer.get(element), y.get(element), elementParameterID.get(element), element) + equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element), y.get(element), elementParameterID.get(element), element)*(x.get(element) - x_outer.get(element)) )
+					tmp = equationState.get(elementEquationStateID.get(element)).pIntegral(x.get(element),
+							y.get(element), elementParameterID.get(element), element)
+							- (equationState.get(elementEquationStateID.get(element)).qIntegral(x_outer.get(element),
+									y.get(element), elementParameterID.get(element), element)
+									+ equationState.get(elementEquationStateID.get(element)).q(x_outer.get(element),
+											y.get(element), elementParameterID.get(element), element)
+											* (x.get(element) - x_outer.get(element)))
 							- rhss.get(element) + Apsi.get(element);
 					fks.set(element, tmp);
 //											System.out.println("\t"+ element + "\t" + fks.get(element));
 
-					innerResidual += tmp*tmp;
+					innerResidual += tmp * tmp;
 				}
 
-				innerResidual = Math.pow(innerResidual,0.5);
+				innerResidual = Math.pow(innerResidual, 0.5);
 //				System.out.println("\t\t\t-Inner iteration " + j + " with residual " +  innerResidual);    
-				if(innerResidual < newtonTolerance) {
+				if (innerResidual < newtonTolerance) {
 
 					break;
 
 				}
 
-
-				/* 
+				/*
 				 * CONJUGATE GRADIENT METHOD
 				 */
 				dx = cg.solve(dis, fks, mainDiagonal);
 //					System.out.println("CG");
 //					System.out.println("dx psi");
-				for(int element=1; element<elementParameterID.size(); element++) {
+				for (int element = 1; element < elementParameterID.size(); element++) {
 
-					tmp  = x.get(element)-dx.get(element);
+					tmp = x.get(element) - dx.get(element);
 					x.set(element, tmp);
 //					System.out.println(dx.get(element) +" "+ tmp);
 
@@ -220,11 +236,9 @@ public class NestedNewtonCG {
 			} //// OUTER CYCLE END ////
 
 		}
-		
-		return x;
 
+		return x;
 
 	}
 
 }
-

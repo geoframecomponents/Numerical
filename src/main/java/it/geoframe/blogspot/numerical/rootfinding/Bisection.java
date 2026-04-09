@@ -23,7 +23,7 @@
 package it.geoframe.blogspot.numerical.rootfinding;
 
 
-import it.geoframe.blogspot.closureequation.equationstate.EquationState;
+import org.geoframe.closureequation.equationstate.EquationState;
 
 /**
  * @author Niccolo` Tubini

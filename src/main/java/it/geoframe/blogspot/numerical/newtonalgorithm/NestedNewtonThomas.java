@@ -3,7 +3,7 @@ package it.geoframe.blogspot.numerical.newtonalgorithm;
 import java.util.List;
 
 import it.geoframe.blogspot.numerical.linearsystemsolver.Thomas;
-import it.geoframe.blogspot.closureequation.equationstate.EquationState;
+import org.geoframe.closureequation.equationstate.EquationState;
 
 /*
  * GNU GPL v3 License
