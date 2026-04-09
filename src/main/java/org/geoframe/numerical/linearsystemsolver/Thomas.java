@@ -1,4 +1,4 @@
-package it.geoframe.blogspot.numerical.linearsystemsolver;
+package org.geoframe.numerical.linearsystemsolver;
 /*
  * GNU GPL v3 License
  *

@@ -11,7 +11,7 @@
 		Numerical</name>
 	<description>Rain Snow Separation</description>
 	<url>
-		https://github.com/geoframecomponents/RainSnowSep</url>
+		https://github.com/geoframecomponents/Numerical</url>
 
 
 	<organization>
@@ -54,10 +54,10 @@
 
 	<scm>
 		<connection>
-			scm:git:https://github.com/geoframecomponents/RainSnowSep.git</connection>
+			scm:git:https://github.com/geoframecomponents/Numerical.git</connection>
 		<developerConnection>
-			scm:git:ssh://git@github.com:geoframecomponents/RainSnowSep.git</developerConnection>
-		<url>https://github.com/geoframecomponents/RainSnowSep</url>
+			scm:git:ssh://git@github.com:geoframecomponents/Numerical.git</developerConnection>
+		<url>https://github.com/geoframecomponents/Numerical</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -72,27 +72,6 @@
 		</repository>
 
 		<repository>
-			<id>osgeo</id>
-			<name>OSGeo Nexus Release Repository</name>
-			<url>https://repo.osgeo.org/repository/release/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>geosolutions</id>
-			<name>GeoSolutions repository used for imageio-ext, jai-ext</name>
-			<url>https://maven.geo-solutions.it/</url>
-		</repository>
-
-		<repository>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -103,8 +82,8 @@
 
 
 	</repositories>
-	
-	
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.geoframe</groupId>

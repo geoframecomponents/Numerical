@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolo` Tubini
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,36 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geoframe.blogspot.numerical.ode;
+package org.geoframe.numerical.matop;
+
+import java.util.List;
 
 /**
- * @author Niccolò Tubini, Giuseppe Formetta
- * 
+ *
+ * @author Niccolo' Tubini, Riccardo Rigon, Michael Dumbser
  */
+public abstract class Matop {
 
-public interface OrdinaryDifferentialEquation {
 	
-		
-	public abstract double compute(double x);
+	public abstract List<Double> solve(List<Double> dis, List<Double> variable);
 	
-	public abstract double computeDerivative(double x);
 	
-	public abstract double computeP(double x);
-		
-	public abstract double computePIntegral(double x);
-	
-	public abstract double computeRHS();
-	
-	public default  double computeQ(double x) {
-		
-		return computeP(x) - computeDerivative(x);
-				
-	}
-
-	public default double computeQIntegral(double x) {
-		
-		return computePIntegral(x) - compute(x);
-		
-	}
-
 }

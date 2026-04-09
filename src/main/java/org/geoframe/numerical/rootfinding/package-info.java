@@ -7,4 +7,4 @@
  * @author Niccolo` Tubini
  *
  */
-package it.geoframe.blogspot.numerical.rootfinding;
+package org.geoframe.numerical.rootfinding;

@@ -17,15 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geoframe.blogspot.numerical.linearsystemsolver;
+package org.geoframe.numerical.linearsystemsolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//import bidimensionalDomain.Geometry;
-//import bidimensionalDomain.Topology;
-import it.geoframe.blogspot.numerical.matop.*;
+import org.geoframe.numerical.matop.*;
 
 /**
  * <h1>Conjugate gradient method </h1>

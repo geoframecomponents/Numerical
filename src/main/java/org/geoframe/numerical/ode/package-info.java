@@ -5,4 +5,4 @@
  * @author Niccolo` Tubini, Giuseppe Formetta
  *
  */
-package it.geoframe.blogspot.numerical.ode;
+package org.geoframe.numerical.ode;

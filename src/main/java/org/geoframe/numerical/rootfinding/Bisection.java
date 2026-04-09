@@ -20,7 +20,7 @@
 /**
  * 
  */
-package it.geoframe.blogspot.numerical.rootfinding;
+package org.geoframe.numerical.rootfinding;
 
 
 import org.geoframe.closureequation.equationstate.EquationState;

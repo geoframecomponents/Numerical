@@ -17,15 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geoframe.blogspot.numerical.newtonalgorithm;
+package org.geoframe.numerical.newtonalgorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.geoframe.closureequation.equationstate.EquationState;
-import it.geoframe.blogspot.numerical.linearsystemsolver.*;
-import it.geoframe.blogspot.numerical.matop.*;
+import org.geoframe.numerical.linearsystemsolver.*;
+import org.geoframe.numerical.matop.*;
 
 public class NestedNewtonCG {
 

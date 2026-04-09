@@ -1,9 +1,9 @@
-package it.geoframe.blogspot.numerical.newtonalgorithm;
+package org.geoframe.numerical.newtonalgorithm;
 
 import java.util.List;
 
-import it.geoframe.blogspot.numerical.linearsystemsolver.Thomas;
 import org.geoframe.closureequation.equationstate.EquationState;
+import org.geoframe.numerical.linearsystemsolver.Thomas;
 
 /*
  * GNU GPL v3 License
