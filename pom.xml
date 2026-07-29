@@ -1,5 +1,7 @@
-<project>
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.geoframe</groupId>
 	<artifactId>
@@ -16,27 +18,47 @@
 
 	<organization>
 		<name>GEOframe</name>
-		<url>https://github.com/geoframecomponents</url>
+		<url>https://geoframe.blogspot.com</url>
 	</organization>
 
 
-	<!--<developers>
+	<developers>
 		<developer>
-			<id></id>
-			<name></name>
-			<email></email>
-			<organization>/organization>
-			<organizationUrl></organizationUrl>
+			<id>bubobne</id>
+			<name>Daniele Andreis</name>
+			<email>daniele.andreis@gmail.com</email>
+			<organization>GEOframe</organization>
+			<organizationUrl>https://geoframe.blogspot.com/</organizationUrl>
 		</developer>
-	</developers>-->
+		<developer>
+			<id>formeppe</id>
+			<name>Giuseppe Formetta</name>
+			<email>giuseppe.formetta@unitn.it</email>
+			<organization>GEOframe</organization>
+			<organizationUrl>https://geoframe.blogspot.com/</organizationUrl>
+		</developer>
+		<developer>
+			<name>Niccolo Tubini</name>
+			<email>niccolo.tubini@unitn.it</email>
+			<organization>GEOframe</organization>
+			<organizationUrl>https://geoframe.blogspot.com/</organizationUrl>
+		</developer>
+		<developer>
+			<name>Concetta D'Amato</name>
+			<email>concetta.damato@unitn.it</email>
+			<organization>GEOframe</organization>
+			<organizationUrl>https://geoframe.blogspot.com/</organizationUrl>
+		</developer>
+	</developers>
+	
 
 	<properties>
 		<!-- numerical libarry version-->
-		<revision>1.0.4-SNAPSHOT</revision>
+		<revision>1.0.4</revision>
 		<!-- external libraries version-->
 		<hm.version>0.10.11</hm.version>
 		<gt.version>34.0</gt.version>
-		<closure.equation.version>1.9.1</closure.equation.version>
+		<closure.equation.version>1.9.2</closure.equation.version>
 		<!--<imagen.version>0.9.0-SNAPSHOT</imagen.version>-->
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -112,6 +134,18 @@
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>central</publishingServerId>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.13</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>central</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
 
