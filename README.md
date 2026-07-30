@@ -3,11 +3,10 @@
 A numerical library for the GEOframe framework, supporting **hydrological modeling workflows**.
 
 ---
-
 ## Metadata
 - **Language**: Java
-- **Build system**: Gradle
-- **@author**: Niccolo' Tubini
+- **Build system**: Maven
+- **@author**: Niccolo' Tubini, Concetta D'Amato, Daniele Andreis, Giuseppe Formetta
 - **@license**: See the `LICENSE` file for license information (  GNU GENERAL PUBLIC LICENSE Version 3)
 
 ---
@@ -17,13 +16,27 @@ This project is licensed under the GNU General Public License v3.0. See LICENSE.
 
 ---
 
+[!WARNING]
+ **Repository Update**
 
-## Overview
+ This repository has undergone several changes compared to the original version. In particular, the build system has been migrated from **Gradle** to **Maven**.
 
-This is a Gradle-based Java project that collects implementations of numerical algorithms used across the GEOframe framework.
-The library is intended to provide reusable, general-purpose numerical methods to support scientific and hydrological modeling workflows.
+ If you are looking for the original Gradle-based implementation or wish to continue development from the previous codebase, you can find it under the Git tag **`v1.0.3`**.
 
-It is designed as a **library module**, not as a standalone application, and is consumed by other GEOframe components.
+
+ ## Installation
+
+The library is available on **[Maven Central](https://central.sonatype.com/artifact/org.geoframe/numerical)**
+
+Add the following dependency to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.geoframe</groupId>
+    <artifactId>numerical</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
 
 ---
 
